@@ -6,6 +6,7 @@
 
 #define MAXN 51
 #define MAXNi 2311
+
 using namespace std;
 
 int N;
