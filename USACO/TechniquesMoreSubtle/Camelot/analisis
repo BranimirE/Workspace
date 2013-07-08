@@ -1,0 +1,10 @@
+todos los caballos van donde el rey
+los caballos y el rey solito se mueven a una pos donde dee menor distancia de recorrido
+el rey se mueve a la posicion de un caballo y buscar la pos que el que dee menor distancia
+el rey se mueve a un lugar, un caballo va a recogerlo y luego buscar la menor distancia(podriamos probar con todas las posiciones
+pero ahora que caballo iria por el ?
+)
+
+int dy[] = {-2,-1, 1, 2, 2, 1,-1,-2};
+int dx[] = { 1, 2, 2, 1,-1,-2,-2,-1};
+
