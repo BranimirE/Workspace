@@ -3,6 +3,7 @@ ID: brani.e2
 PROG:fence6 
 LANG: C++
  */
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -11,6 +12,7 @@ LANG: C++
 
 #define MAXN 101
 #define INF 1<<28
+
 using namespace std;
 
 int N, idseg, nid;
