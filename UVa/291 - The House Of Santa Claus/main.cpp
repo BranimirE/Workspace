@@ -4,7 +4,7 @@ using namespace std;
 int m[6][6]={0};
 void solve(int a, int sum, int sol){
 	if(sum == 0){
-		cout << sol<<"\\n" ;
+		cout << sol<< endl ;
 		return;
 	}
 	for(int i = 1; i <= 5; ++i)
@@ -21,6 +21,5 @@ int main(){
 	m[4][3] = m[4][5] = 1;
 	m[5][1] = m[5][2] = m[5][3] = m[5][4] = 1;
 	solve(1, 16, 1);
-	cout << endl;
 	return 0;
 }
