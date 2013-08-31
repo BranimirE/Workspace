@@ -24,7 +24,7 @@ int main(){
 	int casos, a, b, k , ans;
 	cin >> casos; 
 	while( casos-- ){
-	cin >> a >> b >> k;
+		cin >> a >> b >> k;
 		ans = mem[b][k] - mem[a-1][k];
 		cout << ans << endl;
 	}
