@@ -1,0 +1,78 @@
+#include <iostream>
+#include <cstring>
+#include <vector>
+#include <algorithm>
+using namespace std;
+#define MAXN 100010
+vector<int> primes;
+void generate_primes(){
+	bool v[MAXN];
+	memset(v, false, sizeof(v));
+	for(int i = 2; i * i < MAXN; i++)
+		if(!v[i])
+			for(int j = i + i; j < MAXN; j += i)
+				v[j] = true;
+	for(int i = 2; i < MAXN; i++)
+		if(!v[i])
+			primes.push_back(i);
+}
+
+vector<int> fact[MAXN];
+vector<int> factorize(int n){
+	if(fact[n].size())return fact[n];
+	vector<int> &ans = fact[n];
+	int pos = 0;
+	while(primes[pos] * primes[pos] <= n){
+		if(n % primes[pos] == 0){
+			ans.push_back(primes[pos]);
+			while(n % primes[pos] == 0)
+				n /= primes[pos];
+		}
+		pos++;
+	}
+	if(n > 1)ans.push_back(n);
+	return ans;
+}
+int n, m, g, x, y;
+int a[MAXN];
+vector<int> v[MAXN];
+vector<int> cont[MAXN];
+int main(){
+	generate_primes();
+	cin >> n >> m;
+	for(int i = 0; i < n; i++){
+		cin >> a[i];
+		cont[a[i]].push_back(i);
+		vector<int> f = factorize(a[i]);
+		for(int j = 0; j < f.size(); j++)
+			v[f[j]].push_back(i);
+	}
+	int ans;
+	for(int i = 0; i < m; i++){
+		cin >> g >> x >> y;
+		ans = -1;
+		x--; y--;
+		vector<int> f = factorize(g);
+		for(int j = 0; j < f.size(); j++){
+			vector<int> &e = v[f[j]];
+			vector<int>::iterator it1, it2;
+			it1 = lower_bound(e.begin(), e.end(), x);
+			it2 = upper_bound(e.begin(), e.end(), y);
+			while(it1 != it2){
+				ans = max(ans, a[*it1]);
+				it1++;
+			}
+		}
+		if(ans != -1){
+			int t = upper_bound(cont[ans].begin(), cont[ans].end(), y) - lower_bound(cont[ans].begin(), cont[ans].end(), x);
+			if(t)
+				cout << ans << " " << t << endl;
+			else
+				cout << "-1 -1" << endl;
+		}
+		else
+			cout << "-1 -1" << endl;
+	}
+
+	return 0;
+}

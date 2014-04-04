@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete 9 resources" deleteContents="false" description="Delete 9 resources" element1="/COLARR/backtrack.cpp" element2="/COLARR/generador.cpp" element3="/COLARR/main.cpp" element4="/COLARR/a.out" element5="/COLARR/automatico.bash" element6="/COLARR/entrada" element7="/COLARR/fallaaqui" element8="/COLARR/lento" element9="/COLARR/rapido" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="9" stamp="1392580352184"/>
+</session>

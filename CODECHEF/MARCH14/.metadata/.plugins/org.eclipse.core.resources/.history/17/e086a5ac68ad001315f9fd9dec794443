@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main(){
+	int n;
+	cin >> n;
+	int a[n];
+	for(int i = 0; i < n; i++)
+		cin >> a[i];
+	vector<pair<int,int> > ans;
+	for(int i = 0; i < n; i++){
+		int m = i;
+		for(int j = i + 1; j < n; j++)
+			if(a[j] < a[m])
+				m = j;
+		int l = i, r = m;
+		if(l != r)
+			ans.p
+		while(l < r){
+			swap(a[l], a[r]);
+			l++;
+			r--;
+		}
+	}
+
+	return 0;
+}
