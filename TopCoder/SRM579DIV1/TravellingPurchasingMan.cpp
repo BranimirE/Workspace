@@ -18,77 +18,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
-#define INF (1<<29)
+
 using namespace std;
-typedef pair<int,pair<int,int> > state;
+
 
 class TravellingPurchasingMan {
 public:
-
-  vector<pair<int,int> > oc;
-  vector<int> duration;
-  int n, m;
-  int maxclose;
-  int distance[51][51];
-  set<state> indp;
-  map<state, int> dp;
-  int solve(int pos, int time, int visit){
-    if(time > maxclose || visit == ((1<<m) - 1))
-      return 0;
-    state st = make_pair(pos, make_pair(time, visit));
-    if(indp.count(st))
-      return dp[st];
-
-    int ans = 0;
-    
-    if(time <= oc[pos].second && ((visit & (1 << pos)) == 0)){
-      int newtime = max(time, oc[pos].first);
-      for(int i = 0; i < m; i++)
-        if(distance[pos][i] < INF)
-          ans = max(ans, 1 + solve(i, newtime + duration[pos] + distance[pos][i], visit | (1 << pos)));
-    }
-    dp[st] = ans;
-    indp.insert(st);
-    return ans;
-  }
-  int maxStores(int N, vector <string> interestingStores, vector <string> roads) {
-    n = N;
-    m = interestingStores.size();
-    maxclose = 0;
-    for(int i = 0; i < interestingStores.size(); i++){
-      stringstream ss(interestingStores[i]);
-      int a, b, time;
-      ss >> a>> b >> time;
-      oc.push_back(make_pair(a, b));
-      maxclose = max(maxclose, b);
-      duration.push_back(time);
-    }
-
-    for(int i = 0; i < n; i++)
-      for(int j = 0; j < n; j++)
-        if(i != j)
-          distance[i][j] = INF;
-        else
-          distance[i][j] = 0;
-    
-    for(int i = 0; i < roads.size(); i++){
-      stringstream ss(roads[i]);
-      int a, b, time;
-      ss >> a >> b >> time;
-      distance[a][b] = time;
-      distance[b][a] = time;
-    }
-   
-    for(int k = 0; k < n; k++)
-      for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
-            distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j]);
-    int ans = 0;
-    for(int i = 0; i < m; i++)
-      if(distance[n - 1][i] != INF)
-        ans = max(ans, solve(i, distance[n-1][i], 0));
-    return ans;
-  }
+	int maxStores(int N, vector <string> interestingStores, vector <string> roads) {
+		
+	}
 };
 
 
@@ -182,12 +120,12 @@ int main() {
 	
 	{
 	// ----- test 2 -----
-	p0 = 50;
-	string t1[] = {"109588 368232 20485", "314584 364073 20485", "297785 311146 11455", "277494 363216 20485", "112823 284934 20485", "102573 268088 20485", "157705 343721 20485", "8988 357582 20485", "138283 530421 20485", "221983 492327 20485", "16618 252014 20485", "78804 288688 20485", "8410 199798 20485", "150774 468369 20485", "32552 420345 20485", "224072 441206 20485"};
-        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
-	string t2[] = {"4 25 3464", "4 18 10321", "16 41 4833", "28 19 8339", "23 43 6476", "25 40 13904", "49 1 6222", "40 17 3412", "1 7 2223", "32 17 18406", "8 25 18246", "19 20 3520", "23 2 5045", "40 22 16565", "44 16 11519", "10 24 2355", "45 8 4930", "43 39 11455", "9 31 1058", "10 15 17438", "11 20 5011", "14 33 9816", "40 39 14770", "43 4 18766", "41 24 8774", "7 12 17433", "0 40 5495", "28 8 6906", "49 37 16834", "33 29 10546", "31 35 3641", "34 14 20466", "25 10 6277", "14 31 18050", "49 28 4664", "25 43 6064", "48 5 18775", "36 20 18555", "29 26 6182", "35 25 5120", "23 4 18486", "17 13 14500", "5 27 17580", "39 45 12930", "44 41 2004", "4 36 16151", "32 7 4069", "26 5 10840", "10 6 931", "35 6 12955"};
-        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
-	p3 = 11;
+	p0 = 5;
+	string t1[] = {"0 1000 17"};
+			p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+	string t2[] = {"2 3 400","4 1 500","4 3 300","1 0 700","0 2 400"};
+			p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+	p3 = 0;
 	all_right = KawigiEdit_RunTest(2, p0, p1, p2, true, p3) && all_right;
 	// ------------------
 	}
