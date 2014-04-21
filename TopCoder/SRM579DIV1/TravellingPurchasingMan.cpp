@@ -24,9 +24,9 @@ using namespace std;
 
 class TravellingPurchasingMan {
 public:
-	int maxStores(int N, vector <string> interestingStores, vector <string> roads) {
+  int maxStores(int N, vector <string> interestingStores, vector <string> roads) {
 		
-	}
+  }
 };
 
 
