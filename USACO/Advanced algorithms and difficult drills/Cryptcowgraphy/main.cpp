@@ -2,149 +2,252 @@
  ID: brani.e2
  PROG: cryptcow 
  LANG: C++
- */
-// Original -> "Begin the Escape execution at the Break of Dawn"
-// Begin the EscCutino at the BreOape execWak of Dawn 
-// Begin the EscCape execution atO the BreWak of Dawn
-// segundo caso "CBegin the EscCution at the BreOape execWak of OWDawn"
-// caso seis "BCC execuO the EsCinCaWCCreaOpWtiOn at OCDOcOWaOegCeWtheOW BWoWk of Wwn"
-/*
- --- our output ---------
- 0 0
- --- your output ---------
- 1 1
- */
+*/
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <vector>
-#include <bitset>
 #include <cstring>
-
+#include <bitset>
 
 using namespace std;
+
+struct Node{
+  char c;
+  Node *sig;
+  Node *ant;
+  Node(){
+    c = '$';
+    sig = NULL;
+    ant = NULL;
+  }
+  Node(char car){
+    c = car;
+    sig = NULL;
+    ant = NULL;
+  }
+  void imprimir(){
+    cout << c;
+    if(sig != NULL)
+      sig->imprimir();
+    else
+      cout << endl;
+  }
+};
+typedef Node* Iter;
+void enlazar(Iter &a, Iter &b){
+  if(a != NULL)
+    a->sig = b;
+  if(b != NULL)
+    b->ant = a;
+}
+struct String{
+  Node *inicio;
+  Node *ultimo;
+  
+  String(){
+    inicio = new Node('$');
+    ultimo = new Node('$');
+    enlazar(inicio, ultimo);
+  }
+  String(string cad){  
+    inicio = new Node('$');
+    ultimo = new Node('$');
+    enlazar(inicio, ultimo);
+    for(int i = 0; i < cad.size(); i++)
+      push_back(cad[i]);
+  }
+  void push_back(char car){
+    Iter newnode = new Node(car);
+    enlazar(ultimo->ant, newnode);
+    enlazar(newnode, ultimo);
+  }
+
+  Node* begin(){
+    Node *cpini = inicio->sig;
+    return cpini;
+  }
+  Node* end(){
+    Node *cpult = ultimo;
+    return cpult;
+  }
+  void print(){
+    Iter it = begin();
+    while(it != end()){
+      cout << (it->c);
+      it = (it->sig);
+    }
+    cout << endl;
+  }
+  bool operator == (string cad){
+    Iter it = begin();
+    for(int i = 0; i < cad.size(); i++){
+      if(it == NULL || (it->c) != cad[i])return false;
+      it = it->sig;
+    }
+    return (it == end());
+  }
+  bool operator != (string cad){
+    return !(*this == cad);
+  }
+};
+void cambio(Iter c, Iter o, Iter w){
+  enlazar(w->ant, w->sig);
+  w = w->sig;
+  enlazar(o->ant, o->sig);
+  o = o->sig;
+  enlazar(c->ant, c->sig);
+  c = c->sig;
+  
+  if(c == o || o == w)//Uno de los 2 grupos no tiene caracteres ya no es necesario cambiar
+    return;
+
+  Iter cant = c->ant, want = w->ant, oant = o->ant;
+  enlazar(cant, o);
+  enlazar(want, c);  
+  enlazar(oant, w);
+}
+void restablecer(Iter c, Iter o, Iter w){
+  enlazar(c->ant, c);
+  enlazar(c, c->sig);
+  
+  enlazar(o->ant, o);
+  enlazar(o, o->sig);
+  
+  enlazar(w->ant, w);
+  enlazar(w, w->sig);
+}
+/*------------------------------------------  Lista Doble Enlazada ----------------------------------------------- */
+
+String cad("COccCdOeeWfWg");
+string target = "Begin the Escape execution at the Break of Dawn";
+int targetsize;
+
 /*---------- HASH de NealWu------------*/
 #define NHASH 7900001
 bitset <NHASH> hashtable;
 int p [100];
-inline unsigned int hash (const string &s)
-{
-	int len = s.length ();
-	unsigned int sum = 0;
-
-	for (int i = 0; i < len; i++)
-		sum += p [i] * int (s [i]);
-	return sum % NHASH;
+inline unsigned int hash (){
+  unsigned int sum = 0;
+  int i = 0;
+  for (Iter it = cad.begin(); it != cad.end(); it = (it->sig), i++)
+    sum += p [i] * int (it->c);
+  return sum % NHASH;
 }
 /*---------- HASH ------------*/
 
-vector<int> pos;
-string cadena = "Begin the Escape execution at the Break of Dawn";
-long long int bits['z'+ 5];
-bool preprocesar(){
-	for(int i = 0; i < 'z' + 5; i++) bits[i] = 0;
-	for(long long int i = 0; i < cadena.size(); i++)
-		bits[cadena[i]] |= (1LL<<i);
+
+long long int bits[260];
+void preprocesar(){
+  memset(bits, 0, sizeof(bits));
+  for(long long int i = 0; i < target.size(); i++)
+    bits[target[i]] |= (1LL<<i);
 }
-bool contiene(string &sc){
-	//cout << "contiene : \"" << sc << "\" ? " << endl;
-	//cout << cadena << endl;
-	int tam = sc.size();
-	if(tam == 0) return true;
-
-	long long int ans = bits[sc[0]];
-	for(int i = 1; i < tam && ans ; i++){
-		long long int tmp = ((bits[sc[i]]>>1LL) & ans) << 1LL;
-		ans = tmp;
-	}
-	//if(ans == 0)
-	//	cout << "no encontro la cadena" << sc << endl;
-	return ans;
+bool contiene(Iter a, Iter b){//b no esta incluido
+  if(a == b)return true;
+  long long int ans = bits[a->c];
+  a = a->sig;
+  while(a != b){
+    long long int tmp = ((bits[a->c] >> 1LL) & ans) << 1LL;
+    ans = tmp;
+    a = a->sig;
+  }
+  return ans;
 }
-bool verificar(string &c){
-	//cout << "verificacion de cadena \""  << c << "\"" << endl;
-	int i = 0, j = 0, tam = c.size();
+bool verificar(){
+  Iter a = cad.begin(), b;
+  while(a != cad.end()){
+    while(a != cad.end() && ((a->c) == 'C' || (a->c) == 'O' || (a->c) == 'W'))
+      a = a->sig;
+    
+    if(a != cad.end())
+      b = a->sig;
+    else
+      b = a;
+    
+    while(b != cad.end() && !((b->c)=='C' || (b->c)=='O' || (b->c)=='W'))
+      b = b->sig;
+    if(!contiene(a, b))
+      return false;
 
-	for(j = 1; j < tam; j++){
-		if(c[j] == 'C' || c[j] == 'O' || c[j] == 'W'){
-			string tmp = c.substr(i+1, j-1-i);
-			//cout << "revisa \"" << tmp << "\"" << endl;
-			if(!contiene(tmp)){
-				//cout << "no contiene(asdf): \"" << tmp << "\"" << endl;
-				return false;	
-			}
-			i = j;
-		}
-	}
-	return true;
+    if(b == cad.end())
+      a = b;
+    else
+      a = b->sig;
+  }
+  return true;
 }
-bool solve(string &c, int nivel){
+bool solve(int tam){
+  
+  unsigned int hs = hash();
+  if(hashtable[hs])
+    return false;
+  hashtable[hs] = true;
+  
+  if(tam == targetsize)
+    return (cad == target);
+  
+  if(!verificar())
+    return false;
 
-	int hs = hash(c);
-	if(hashtable[hs]){
-		//cout << "ya estaba en la tabla" << c << endl;
-		return false;
-	}
-	//cout << "se inserto en la tabla :  \"" << c << "\"" << endl;
-	hashtable[hs] =true;
-
-	if(!verificar(c)){
-		//cout <<"\""<< c << "\" no pasa verificacion " << endl;
-		return false;
-	}
-	if(nivel == 0 && c == cadena)
-		return true;
-	int tam = c.size();
-	for(int i = 0; i < tam; ++i)
-		if(c[i] == 'C')
-			for(int j = i + 1; j < tam; ++j)
-				if(c[j] == 'O')
-					for(int k = j + 1; k < tam; ++k)
-						if(c[k] == 'W'){
-							string w,x,y,z, cut;
-							w = c.substr(0, i);
-							x = c.substr(i + 1,(j-1)-i);
-							y = c.substr(j + 1, k-1-j);
-							z = c.substr(k + 1, c.size() - 1 - k);
-
-							//cout << w << "\\"<< x << "\\" << y << "\\" << z << endl;
-
-							cut = w + y + x + z;
-
-							bool tmp = solve(cut, nivel - 1);
-							if(tmp)
-								return true;
-						}
-	return false;
+  Iter c = cad.begin();
+  while(c != cad.end()){
+    if((c->c) == 'C'){
+      Iter o = c;
+      while(o != cad.end()){
+        if((o->c) == 'O'){
+          Iter w = o;
+          while(w != cad.end()){
+            if((w->c) == 'W'){
+              cambio(c, o, w);
+              if(solve(tam - 3))
+                return true;
+              restablecer(c, o, w);
+            }
+            w = w->sig;
+          }
+        }
+        o = o->sig;
+      }
+    }
+    c = c->sig;
+  }
+  return false;
 }
+
 int main(){
-	preprocesar();
-	ifstream cin("cryptcow.in");
-	ofstream cout("cryptcow.out");
-	p[0] = 1;
-	for (int i = 1; i < 100; i++)
-		p [i] = 7 * p [i - 1];
-
-	string cad,r, vacio = "" ;
-	getline(cin, cad);
-	string cop = cad;
-	int c = 0, o = 0, w = 0;
-	for(int i = 0; i < (int)cad.size(); ++i){
-		if(cad[i] == 'C'){c++; pos.push_back(i); continue;}
-		if(cad[i] == 'O'){o++; pos.push_back(i); continue;}
-		if(cad[i] == 'W'){w++; pos.push_back(i); continue;}
-		vacio = vacio + cad[i];
-	}
-	r = cadena;
-	sort(r.begin(), r.end());
-	sort(vacio.begin(), vacio.end());
-	//cout << "cadena destino: \"" << cadena<<"\"" << endl;
-	//cout << cad << endl;
-	hashtable.reset();
-	if(c == o && o == w && r == vacio && solve(cad, c)){
-		cout << 1 << " " << c << endl;
-		return 0;
-	}
-	cout << 0 << " " << 0 << endl;
-	return 0;
-}
+  preprocesar();
+  p[0] = 1;
+  for (int i = 1; i < 100; i++)
+    p [i] = 7 * p [i - 1];
+  ifstream cin("cryptcow.in");
+  ofstream cout("cryptcow.out");
+  string encrypted;
+  getline(cin, encrypted);
+  string withoutcow = "";
+  int C, O, W;
+  C = O = W = 0;
+  for(int i = 0; i < encrypted.size(); i++){
+    char car = encrypted[i];
+    if(car == 'C')
+      C++;
+    else if(car == 'O')
+      O++;
+    else if(car == 'W')
+      W++;
+    else
+      withoutcow.push_back(car);
+  }
+  sort(withoutcow.begin(), withoutcow.end());
+  string copy = target;
+  sort(copy.begin(), copy.end());
+  if(C == O && O == W && copy == withoutcow){
+    targetsize = target.size();
+    cad = String(encrypted);
+    if(solve(encrypted.size()))
+      cout << 1 << " " << C << endl;
+    else
+      cout << "0 0" << endl;
+  }else
+    cout << "0 0" << endl;
+  return 0;
+ }
