@@ -8,3 +8,9 @@ a.out
 bin/
 obj/
 *generador*
+.cproject
+.project
+*flymake.cpp
+.settings/
+.classpath
+Debug/
