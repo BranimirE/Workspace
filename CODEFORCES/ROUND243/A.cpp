@@ -1,10 +1,6 @@
 #include <iostream>
-#include <algorithm>
-#include <cmath>
-#include <cstring>
 #include <cstdio>
-#include <cstdlib>
-typedef long long int Number;
+
 using namespace std;
 
 int main(){

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdio>
+
 using namespace std;
+
 double c, f, x;
 
 int main(){

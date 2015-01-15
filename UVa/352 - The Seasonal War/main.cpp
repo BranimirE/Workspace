@@ -17,7 +17,6 @@ void dfs(int x,int y){
 			dfs(x+dx[i], y+dy[i]);
 }
 int main(){
-	//freopen("entrada.in","r",stdin);
 	c[0] = string(MAXN, '0');
 	imgn = 1;
 	while(cin >> n){

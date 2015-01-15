@@ -1,72 +1,65 @@
-#include <stdio.h>
-#include <algorithm>
-#include <cstring>
+#include <cstdio>
 #include <fstream>
-#include <iostream>
+#include <algorithm>
+#include <vector>
 
-
-using namespace std;
 
 #define MAX 200005
-
-int padre[ MAX ]; 
-
-void MakeSet( int n ){for( int i = 1 ; i <= n ; ++i ) padre[ i ] = i;}
-int Find( int x ){return ( x == padre[ x ] ) ? x : padre[ x ] = Find( padre[ x ] );}
-void Union( int x , int y ){padre[ Find( x ) ] = Find( y );}
-bool sameComponent( int x , int y ){return  Find( x ) == Find( y );}
-
-int V , E;      //numero de vertices y aristas
-struct Edge{
-	int origen;     
-	int destino;
-	int peso; 
-	Edge(){}
-	bool operator<( const Edge &e ) const {
-		return peso < e.peso;
-	}
-}arista[ MAX ];    
-Edge MST[ MAX ]; 
-bool used[ MAX ];
-long long int Kruskal(){
-	int origen , destino , peso;
-	long long int total = 0;
-	int numAristas = 0;    
-
-	MakeSet( V );
-	sort( arista , arista + E );
-
-	for( int i = 0 ; i < E ; ++i ){
-		origen = arista[ i ].origen;
-		destino = arista[ i ].destino;
-		peso = arista[ i ].peso;
-
-		if( !sameComponent( origen , destino ) ){
-			total += peso; 
-			numAristas++;
-			Union( origen , destino ); 
-		}
-	}
-	if( V - 1 != numAristas ){
-		//cout << ("No existe MST valido para el grafo ingresado, el grafo debe ser conexo.")<<endl;
-		return 0;
-	}
-	return total ;
-}
-
+using namespace std;
+struct UnionFind {
+  int p[MAX];
+  int r[MAX];
+  int n;
+  UnionFind(int _n) {
+    reset(_n);
+  }
+  void reset(int N){
+    n = N;
+    for(int i = 0 ; i <= n ; ++i )
+       p[i] = i, r[i] = 0;
+  }
+  int Find(int x) {
+    return (p[x]==x?x:p[x]=Find(p[x]));
+  }
+  bool sameComponent(int x, int y) {
+    return Find(x) == Find(y);
+  }
+  void Union(int x, int y) {
+    int xRoot = Find(x);
+    int yRoot = Find(y);
+    if(r[xRoot] > r[yRoot])
+      p[yRoot] = xRoot;
+    else {
+      p[xRoot] = yRoot;
+      if(r[xRoot] == r[yRoot])
+        r[yRoot]++;
+    }
+  }
+};
 int main(){
-	//freopen("entrada.in","r",stdin);
-	while(cin >> V >> E && !(V==0 && E == 0)){
-		long long int tot = 0;
-		for( int i = 0 ; i < E ; ++i ){
-			cin >> arista[i].origen >> arista[i].destino>> arista[i].peso;
-			tot += arista[i].peso;
-		}
-		cout << tot - Kruskal() << endl;
-
-	}
-
-
-
-	return 0;
+  freopen("in", "r", stdin);
+  int n, m, u, v, p;
+  UnionFind uf(MAX - 1);
+  vector<pair<int,pair<int,int> > > g;
+  while(scanf("%d%d", &n, &m) and !(!n and !m)){
+    uf.reset(n);
+    g.clear();
+    int total = 0;
+    while(m--){
+      scanf("%d%d%d", &u, &v, &p);
+      g.push_back(make_pair(p, make_pair(u,v)));
+      total += p;
+    }
+    sort(g.begin(), g.end());
+    int mst = 0;
+    for(int i = 0; i < g.size(); i++){
+      u = g[i].second.first; v = g[i].second.second;
+      if(!uf.sameComponent(u, v)){
+        uf.Union(u,v);
+        mst += g[i].first;
+      }
+    }
+    printf("%d\n", total - mst);
+  }
+  return 0;
 }

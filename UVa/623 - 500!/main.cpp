@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 
-
 using namespace std;
 struct BigNumber{
 	int d[3000];

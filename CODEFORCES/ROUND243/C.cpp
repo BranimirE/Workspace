@@ -1,15 +1,12 @@
 #include <iostream>
-#include <algorithm>
-#include <cmath>
-#include <cstring>
-#include <cstdio>
-#include <cstdlib>
 #include <vector>
-#define lim 1000
-typedef long long int Number;
+#include <algorithm>
+
 using namespace std;
+
 int v[220];
 int n, swa;
+
 int main(){
   cin >> n >> swa;
   for(int i = 0; i < n; i++)

@@ -1,0 +1,10 @@
+#*#
+a.out
+.metadata
+*~
+*.cbp
+*.depend
+*.layout
+bin/
+obj/
+*generador*
