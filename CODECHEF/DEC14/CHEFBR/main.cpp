@@ -8,46 +8,27 @@ struct RTC{~RTC(){cerr << "Time: " << clock() * 1.0 / CLOCKS_PER_SEC <<" seconds
 #define mp make_pair
 #define sz(x) ((int)(x).size())
 #define all(c) (c).begin(),(c).end()
-
-int n, v[102];
+typedef long long int Number;
+const Number MOD = 1000000007;
+int n;
+int a[123];
+Number dp[123][123];
+Number solve(int i, int j) {
+    if (i > j) return 1LL;
+    Number &ans = dp[i][j];
+    if (ans != -1) return ans;
+    ans = solve(i + 1, j);
+    if (a[i] < 0) //Abrir
+	for (int k = i + 1; k <= j; k++)
+	    if (a[k] == (-a[i])) //Cerrar
+		ans = (ans + ((solve(i + 1, k - 1) * solve(k + 1, j)) % MOD)) % MOD;
+    return ans;
+}
 int main() {
-  scanf("%d", &n);
-  for (int i = 0; i < n; i++) {
-    scanf("%d", &v[i]);
-  }
-  int ans = 0;
-  for (int mask = 0, lim = (1<<n); mask < lim; mask++) {
-    stack<int> q;
-    bool balanceado = true;
-
-    for (int i = 0; i < n && balanceado; i++) {
-      if (mask & (1 << i)) {
-	int e = v[i];
-	if (e < 0) {//Abrir
-	  q.push(-e);
-	} else {//Cerrar
-	  if (!q.empty() && q.top() == e) {
-	    q.pop();
-	  } else {
-	    balanceado = false;
-	  }
-	}
-      }
-    }
-    balanceado = balanceado && q.empty();
-    if (balanceado) {
-      cout << "{";
-      for (int i = 0; i < n; i++) {
-	if (i) cout << ", ";
-	if (mask & (1 << i))
-	  printf("%2d", v[i]);
-	else
-	  printf("  ");
-      }
-      cout << "}" << endl;
-      ans++;
-    }
-  }
-  printf("%d\n", ans);
-  return 0;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++)
+	scanf("%d", a + i);  
+    memset(dp, -1, sizeof(dp));
+    printf("%lld\n", solve(0, n - 1));
+    return 0;
 }
