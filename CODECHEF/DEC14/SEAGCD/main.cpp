@@ -8,36 +8,51 @@ struct RTC{~RTC(){cerr << "Time: " << clock() * 1.0 / CLOCKS_PER_SEC <<" seconds
 #define mp make_pair
 #define sz(x) ((int)(x).size())
 #define all(c) (c).begin(),(c).end()
-int n, m;
-int v[11];
-int cnt[11];
-void solve(int i) {
-  if (i == n) {
-    int gcd = v[0];
-    for (int j = 1; j < n; j++)
-      gcd = __gcd(gcd, v[j]);
-    cnt[gcd]++;
-    return;
-  }
-  for (int num = 1; num <= m; num++) {
-    v[i] = num;
-    solve(i + 1);
-  }
+typedef long long int Number;
+const Number MOD = 1000000007LL;
+Number N, M, L, R;
+int b[10000009];
+Number modpow(Number base, Number e) {
+    if (e == 0) return 1LL;
+    Number ans = modpow(base, e / 2LL);
+    ans = (ans * ans);
+    if (ans >= MOD) ans %= MOD;
+    if (e & 1LL) ans = ans * base;
+    if (ans >= MOD) ans %= MOD;
+    return ans;
+}
+int solve() {
+    int num, ult = -1, expo, div, ans = 0;
+    for (int D = M; D >= L; D--) {
+	div = M / D;
+	if (div == ult)
+	    b[D] = expo;
+	else {
+	    expo =  modpow(div, N);
+	    b[D] = expo;
+	    ult = div;
+	}
+	
+	num = D + D;
+	while (num <= M) {
+	    b[D] = (b[D] - b[num]);
+	    if (b[D] < 0) b[D] += MOD;
+	    num += D;
+	}
+	if (D <= R) {
+	    ans = (ans + b[D]);
+	    if (ans >= MOD) ans -= MOD;
+	}
+    }
+    if (ans < 0) ans += MOD;
+    return ans;
 }
 int main() {
-  int t;
-  int l, r;
-  cin >> t;
-  while (t--) {
-    cin >> n >> m;// >> l >> r;
-    memset(cnt, 0, sizeof(cnt));
-    solve(0);
-    int ans = 0;
-    for (int i = 1; i <= m; i++) {
-      cout << "cnt[" << i << "] = " << cnt[i] << endl;
+    int t;
+    scanf("%d", &t);
+    while (t--) {
+	scanf("%lld %lld %lld %lld", &N, &M, &L, &R);
+	printf("%d\n", solve());
     }
-    cout << string(20, '-') << endl;
-
-  }
-  return 0;
+    return 0;
 }
