@@ -5,31 +5,36 @@ LANG: C++
  */
 #include <cstdio>
 #include <algorithm>
+#include <climits>
 
 using namespace std;
-typedef long long int Number;
 int n;
 int v[1234];
+int maxi, mini;
 int main() {
   freopen("skidesign.in", "r", stdin);
   freopen("skidesign.out", "w", stdout);
   scanf("%d", &n);
-  for (int i = 0; i < n; i++)
-    scanf("%d", &v[i]);
-  sort(v, v + n);
-  if ((v[n - 1] - v[0]) <= 17) {
+  maxi = INT_MIN;
+  mini = INT_MAX;
+  for (int i = 0; i < n; i++) {
+    scanf("%d", v + i);
+    maxi = max(maxi, v[i]);
+    mini = min(mini, v[i]);
+  }
+  if (maxi - mini <= 17) {
     printf("0\n");
     return 0;
   }
-  long long int ans = 1LL<<59LL, tmp;
-  for (int i = v[0]; i <= v[n-1] - 17; i++) {
-    int bottom = i, top = i + 17;
+  long long ans = LLONG_MAX, tmp;
+  for (long long  abajo = 0; abajo + 17 <= 100; abajo++) {
+    long long arriba = abajo + 17;
     tmp = 0;
-    for (int j = 0; j < n && v[j] < bottom; j++) {
-      tmp += Number(bottom - v[j]) * Number(bottom - v[j]);
-    }
-    for (int j = n - 1; j >= 0 && top < v[j]; j--) {
-      tmp += Number(v[j] - top) * Number (v[j] - top);
+    for (int i = 0; i < n; i++) {
+      if (v[i] < abajo)//Subirlo
+	tmp += (abajo - v[i]) * (abajo - v[i]);
+      if (v[i] > arriba)//Bajarlo
+	tmp += (v[i] - arriba) * (v[i] - arriba);
     }
     ans = min(ans, tmp);
   }
